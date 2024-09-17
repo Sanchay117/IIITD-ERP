@@ -1,59 +1,39 @@
 import java.util.*;
 
-public class Student {
+public class Student extends User {
     private Course[] enrolledCourses = {};
     private finishedCourse[] finishedCourses = {};
-    private final String email;
-    private final String password;
-    private final String name;
     private final int semester;
     private int creditsEnrolled;
     private Complaint[] complaints = {};
 
     public Student(String email, String password,int semester) {
-        this.email = email;
-        this.password = password;
+        super(email, password,0);
         this.semester = semester;
-        this.name = this.email.split("[0-9@]")[0]; // generating name from email as the sequence of letters before the first occurrence of a number or @
     }
 
-    private static void printDashes(){
-        System.out.println("--------------------------------------------------------------------------");
-    }
-
-    public String getEmail(){
-        return email;
-    }
-
-    public String getPassword(){
-        return password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
+    @Override
     public int getSemester(){
         return semester;
     }
 
-    public void welcome(){
-        System.out.println("Welcome: "+name+" !");
-    }
-
+    @Override
     public Course[] getEnrolledCourses() {
         return enrolledCourses;
     }
 
+    @Override
     public finishedCourse[] getFinishedCourses(){
         return finishedCourses;
     }
 
+    @Override
     public int getCreditsEnrolled() {
         return creditsEnrolled;
     }
 
-    public int studentInterface(){
+    @Override
+    public int interfaceGUI(){
         int choice;
         while (true){
             printDashes();
@@ -71,6 +51,7 @@ public class Student {
         return choice;
     }
 
+    @Override
     public void addCourse(Course course){
         Course[] newCourses = new Course[enrolledCourses.length+1];
         System.arraycopy(enrolledCourses, 0, newCourses, 0, enrolledCourses.length);
@@ -79,6 +60,7 @@ public class Student {
         creditsEnrolled+=course.getCredits();
     }
 
+    @Override
     public void removeCourse(String courseCode){
         Course[] newCourses = new Course[enrolledCourses.length - 1];
         int index = -1;
@@ -97,6 +79,7 @@ public class Student {
         enrolledCourses = newCourses;
     }
 
+    @Override
     public void addFinishedCourse(Course course,int grade){
         finishedCourse course_finish = new finishedCourse(course,grade);
         finishedCourse[] newFinishedCourses = new finishedCourse[finishedCourses.length+1];
@@ -105,6 +88,7 @@ public class Student {
         finishedCourses = newFinishedCourses;
     }
 
+    @Override
     public void registerForCourse(final Course[] courses) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter the semester you want to view courses for: ");
@@ -186,10 +170,28 @@ public class Student {
         return false;
     }
 
+    @Override
     public void addComplaint(Complaint cmp){
         Complaint[] newComplaints = new Complaint[complaints.length+1];
         System.arraycopy(complaints, 0, newComplaints, 0, complaints.length);
         newComplaints[complaints.length] = cmp;
         complaints = newComplaints;
     }
+
+    @Override
+    public float calcCG(){
+        int cg = 0;
+        int cnt = 0;
+        for(finishedCourse finished : finishedCourses){
+            cg+=finished.getGrade();
+            cnt++;
+        }
+        return (float) cg /cnt;
+    }
+
+    // These Are Dummy User Methods Which Only Professor.java uses!
+    @Override
+    public ArrayList<ProfessorCourse> getTeachingCourses() { throw new UnsupportedOperationException(); }
+    @Override
+    public void addCourse(ProfessorCourse crse) {throw new UnsupportedOperationException();}
 }
