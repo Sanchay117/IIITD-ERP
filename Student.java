@@ -1,11 +1,14 @@
-import java.util.Scanner;
+import java.util.*;
 
 public class Student {
     private Course[] enrolledCourses = {};
+    private finishedCourse[] finishedCourses = {};
     private final String email;
     private final String password;
     private final String name;
     private final int semester;
+    private int creditsEnrolled;
+    private Complaint[] complaints = {};
 
     public Student(String email, String password,int semester) {
         this.email = email;
@@ -42,12 +45,20 @@ public class Student {
         return enrolledCourses;
     }
 
+    public finishedCourse[] getFinishedCourses(){
+        return finishedCourses;
+    }
+
+    public int getCreditsEnrolled() {
+        return creditsEnrolled;
+    }
+
     public int studentInterface(){
         int choice;
         while (true){
             printDashes();
             welcome();
-            System.out.println("Press\n1.To View Available Courses\n2.To Register For Courses\n3.To View Schedule\n4.Track Academic Progress\n5.Drop Courses\n6.To Submit Complaints\n7.Logout And Exit");
+            System.out.println("Press\n1.To View Available Courses\n2.To Register For Courses\n3.To View Schedule\n4.Track Academic Progress\n5.Drop Courses\n6.To Submit Complaints\n7.Logout");
             Scanner scanner = new Scanner(System.in);
             choice = scanner.nextInt();
             printDashes();
@@ -65,5 +76,120 @@ public class Student {
         System.arraycopy(enrolledCourses, 0, newCourses, 0, enrolledCourses.length);
         newCourses[enrolledCourses.length] = course;
         enrolledCourses = newCourses;
+        creditsEnrolled+=course.getCredits();
+    }
+
+    public void removeCourse(String courseCode){
+        Course[] newCourses = new Course[enrolledCourses.length - 1];
+        int index = -1;
+        for (int i = 0; i < enrolledCourses.length; i++) {
+            if (enrolledCourses[i].getCourseCode().equals(courseCode)){
+                index = i;
+                break;
+            }
+        }
+        creditsEnrolled-=enrolledCourses[index].getCredits();
+        for (int i = 0, j = 0; i < enrolledCourses.length; i++) {
+            if (i != index) {
+                newCourses[j++] = enrolledCourses[i];
+            }
+        }
+        enrolledCourses = newCourses;
+    }
+
+    public void addFinishedCourse(Course course,int grade){
+        finishedCourse course_finish = new finishedCourse(course,grade);
+        finishedCourse[] newFinishedCourses = new finishedCourse[finishedCourses.length+1];
+        System.arraycopy(finishedCourses, 0, newFinishedCourses, 0, finishedCourses.length);
+        newFinishedCourses[finishedCourses.length] = course_finish;
+        finishedCourses = newFinishedCourses;
+    }
+
+    public void registerForCourse(final Course[] courses) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the semester you want to view courses for: ");
+        int semester = scanner.nextInt();
+
+        if(semester>this.semester){
+            System.out.println("Invalid semester");
+            return;
+        }
+
+        HashMap<Integer, Course> availableCourses = new HashMap<>();
+        int courseCounter = 1;
+
+        // Filter and display courses that are in the selected semester and not already enrolled
+        System.out.println("Courses Available for Semester " + semester + " (not already enrolled): ");
+        for (Course course : courses) {
+            if (course.getSemester() == semester && !isEnrolledIn(course)) {
+                availableCourses.put(courseCounter, course);
+                System.out.println(courseCounter + ". " + course.getCourseCode() + " - " + course.getCourseName());
+                courseCounter++;
+            }
+        }
+
+        if (availableCourses.isEmpty()) {
+            System.out.println("No courses available for this semester.");
+            return;
+        }
+
+        // Ask user to select a course by number
+        System.out.print("Enter the number of the course you want to enroll in: ");
+        int selectedNumber = scanner.nextInt();
+        Course selectedCourse = availableCourses.get(selectedNumber);
+
+        if (selectedCourse == null) {
+            System.out.println("Invalid course selection.");
+            return;
+        }
+
+        // Check prerequisites
+        boolean prerequisitesMet = true;
+        for (String prerequisite : selectedCourse.getPrerequisites()) {
+            if (!hasFinishedCourse(prerequisite)) {
+                prerequisitesMet = false;
+            }
+        }
+
+        if (!prerequisitesMet) {
+            System.out.println("Cannot enroll in this course as prerequisites are not met.");
+            return;
+        }
+
+        if (creditsEnrolled + selectedCourse.getCredits() > 20) {
+            System.out.println("Credit Overload! Can't register for new courses without dropping previous ones!");
+            return;
+        }
+
+        // Enroll in course
+        System.out.println("Enrolled in course: " + selectedCourse.getCourseCode());
+        addCourse(selectedCourse);
+    }
+
+    // Helper method to check if student is already enrolled in a course
+    private boolean isEnrolledIn(Course course) {
+        for (Course enrolledCourse : enrolledCourses) {
+            if (enrolledCourse.getCourseCode().equals(course.getCourseCode())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Helper method to check if a prerequisite has been finished
+    private boolean hasFinishedCourse(String courseCode) {
+        for (finishedCourse finished : finishedCourses) {
+            if (finished.getCourseCode().equals(courseCode)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void addComplaint(Complaint cmp){
+        Complaint[] newComplaints = new Complaint[complaints.length+1];
+        System.arraycopy(complaints, 0, newComplaints, 0, complaints.length);
+        newComplaints[complaints.length] = cmp;
+        complaints = newComplaints;
     }
 }
