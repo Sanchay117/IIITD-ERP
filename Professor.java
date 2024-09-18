@@ -40,6 +40,10 @@ public class Professor extends User {
     @Override
     public int getSemester() { throw new UnsupportedOperationException(); }
     @Override
+    public void setSemester(int sem) { throw new UnsupportedOperationException(); }
+    @Override
+    public void removeCourse(Course course) { throw new UnsupportedOperationException(); }
+    @Override
     public Course[] getEnrolledCourses() { throw new UnsupportedOperationException(); }
     @Override
     public finishedCourse[] getFinishedCourses() { throw new UnsupportedOperationException(); }

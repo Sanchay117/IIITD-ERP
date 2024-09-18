@@ -3,6 +3,7 @@ public class Complaint {
     private String sender;
     private String title;
     private String content;
+    private String solution;
 
     public Complaint(boolean status, String sender, String title, String content) {
         this.status = status;
@@ -10,4 +11,30 @@ public class Complaint {
         this.title = title;
         this.content = content;
     }
+
+    public String getStatus() {
+        if(status) return "Resolved";
+        else return "Pending";
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+    public String getContent() {
+        return content;
+    }
+
+    public void resolve(String x){
+        status=true;
+        solution=x;
+    }
+
+    public String getSolution() {
+        return solution;
+    }
 }
+

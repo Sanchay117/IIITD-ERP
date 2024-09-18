@@ -1,10 +1,10 @@
 import java.util.ArrayList;
 
-public abstract class User {
+public abstract class User implements UserInterface{
     protected String email;
     protected String password;
     protected String name;
-    private int type; // 0 for student , 1 for prof , 2 for admin
+    private final int type; // 0 for student , 1 for prof , 2 for admin
 
     public User(String email, String password,int type) {
         this.email = email;
@@ -15,6 +15,10 @@ public abstract class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -50,6 +54,8 @@ public abstract class User {
     public abstract void registerForCourse(final Course[] courses);
     public abstract void addComplaint(Complaint cmp);
     public abstract float calcCG();
+    public abstract void setSemester(int semester);
+    public abstract void removeCourse(Course course);
 
     // Professor Specific Actions
     public abstract ArrayList<ProfessorCourse> getTeachingCourses();

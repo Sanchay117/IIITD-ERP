@@ -94,8 +94,8 @@ public class Main {
         Professor p2 = new Professor("arun@iiitd.ac.in","arun1234");
         p1.addCourse(new ProfessorCourse(OS,-1,"Monday:17:00-16:00","Operating System Design"));
         p2.addCourse(new ProfessorCourse(AP,-1,"Monday:17:00-16:00","OOP with Java"));
-        p2.addCourse(new ProfessorCourse(IP,-1,"Tuesday:17:00-16:00","Intro to CS with python"));
-        p2.addCourse(new ProfessorCourse(DSA,-1,"Wednesday:17:00-16:00","DSA with C++"));
+//        p2.addCourse(new ProfessorCourse(IP,-1,"Tuesday:17:00-16:00","Intro to CS with python"));
+//        p2.addCourse(new ProfessorCourse(DSA,-1,"Wednesday:17:00-16:00","DSA with C++"));
         users.add(p1);
         users.add(p2);
 
@@ -674,7 +674,8 @@ public class Main {
                         break;
                     }
                 }
-            }else{
+            }
+            else{
                 // Admin Mode
                 while (true){
                     printDashes();
@@ -793,6 +794,240 @@ public class Main {
 
                                 System.out.println("Successfully Added New Course");
 
+                            }
+                        }
+                    }
+                    else if (adminChoice == 2) {
+                        printDashes();
+                        scanner = new Scanner(System.in);
+
+                        System.out.println("Enter the student's email to view or update records:");
+                        String studentEmail = scanner.nextLine();
+
+                        User studentToUpdate = null;
+                        for (User user : users) {
+                            if (user.getType()==0 && user.getEmail().equals(studentEmail)) {
+                                studentToUpdate =  user;
+                                break;
+                            }
+                        }
+
+                        // If student is found
+                        if (studentToUpdate != null) {
+                            // Display student information
+                            System.out.println("Student found:");
+                            System.out.println("Name: " + studentToUpdate.getName());
+                            System.out.println("Email: " + studentToUpdate.getEmail());
+                            System.out.println("Semester: " + studentToUpdate.getSemester());
+                            System.out.println("Credits Enrolled: " + studentToUpdate.getCreditsEnrolled());
+
+                            // Allow admin to choose what to update
+                            System.out.println("What would you like to update?");
+                            System.out.println("1. Update Personal Information");
+                            System.out.println("2. Update Grades");
+                            int updateChoice = scanner.nextInt();
+                            scanner.nextLine();  // consume newline
+
+                            switch (updateChoice) {
+                                case 1:
+                                    // Update personal information
+                                    System.out.println("Enter new email:");
+                                    String newEmail = scanner.nextLine();
+                                    System.out.println("Enter new semester:");
+                                    int newSemester = scanner.nextInt();
+                                    scanner.nextLine(); // consume newline
+
+                                    studentToUpdate.setEmail(newEmail);
+                                    studentToUpdate.setSemester(newSemester);
+                                    System.out.println("Personal information updated successfully.");
+                                    break;
+
+                                case 2:
+                                    // Update grades
+                                    System.out.println("Enter the course code to update grade:");
+                                    String courseCode = scanner.nextLine();
+
+                                    boolean courseFound = false;
+                                    for (Course course : studentToUpdate.getEnrolledCourses()) {
+                                        if (course.getCourseCode().equals(courseCode)) {
+                                            System.out.println("Enter new grade:");
+                                            int newGrade = scanner.nextInt();
+
+                                            studentToUpdate.addFinishedCourse(course,newGrade);
+                                            studentToUpdate.removeCourse(course);
+
+                                            System.out.println("Grade updated successfully.");
+                                            courseFound = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!courseFound) {
+                                        System.out.println("Student Not Enrolled In this course");
+                                    }
+                                    break;
+
+                                default:
+                                    System.out.println("Invalid option.");
+                                    break;
+                            }
+                        } else {
+                            System.out.println("Student not found.");
+                        }
+                    }
+                    else if(adminChoice==3){
+                        printDashes();
+                        scanner = new Scanner(System.in);
+                        System.out.println("Enter the Course Code:");
+                        String courseID = scanner.nextLine();
+
+                        Course courseToAssign = null;
+                        for (Course course : courses) {
+                            if (course.getCourseCode().equals(courseID)) {
+                                courseToAssign = course;
+                                break;
+                            }
+                        }
+
+                        if(courseToAssign==null){
+                            System.out.println("No course found with the provided Course Code.");
+                            continue;
+                        }
+
+                        System.out.println("Course found: " + courseToAssign.getCourseName());
+
+                        System.out.println("Available Professors:");
+                        List<User> availableProfessors = new ArrayList<>();
+                        int counter = 1;
+                        for (User user : users) {
+                            if (user.getType()==1) {
+                                availableProfessors.add(user);
+                                System.out.println(counter + ". " + user.getName() );
+                                counter++;
+                            }
+                        }
+
+                        if(availableProfessors.isEmpty()){
+                            System.out.println("No available professors found.");
+                            continue;
+                        }
+
+                        System.out.println("Enter the number of the professor you want to assign:");
+                        int professorIndex = scanner.nextInt();
+                        scanner.nextLine();
+                        boolean flag = false;
+                        if (professorIndex > 0 && professorIndex <= availableProfessors.size()) {
+                            User assignedProfessor = availableProfessors.get(professorIndex - 1);
+                            for(ProfessorCourse crse:assignedProfessor.getTeachingCourses()){
+                                if(crse.getCourseCode().equals(courseID)){
+                                    System.out.println("Professor Already Teaching This Course");
+                                    flag = true;
+                                    break;
+                                }
+                            }
+
+                            if(flag){
+                                continue;
+                            }
+                            assignedProfessor.addCourse(new ProfessorCourse(courseToAssign,-1,"---","---"));
+                            System.out.println("Professor " + assignedProfessor.getName() + " has been assigned to the course " + courseToAssign.getCourseName());
+                        } else {
+                            System.out.println("Invalid professor selection.");
+                        }
+                    }
+                    else if(adminChoice==4){
+                        printDashes();
+//                        System.out.println("All Complaints:");
+//                        int cnt = 1;
+//                        for(Complaint complaint : complaints) {
+//                            System.out.println(cnt+"."+complaint.getStatus()+" "+complaint.getTitle());
+//                            System.out.println(complaint.getContent());
+//                            System.out.println("-"+complaint.getSender());
+//                            cnt++;
+//                        }
+                        while (true){
+                            printDashes();
+                            System.out.println("Press\n1.To Resolve Complaint\n2.To Filter By Status\n3.Go Back");
+                            scanner = new Scanner(System.in);
+                            int choicee = scanner.nextInt();
+
+                            if(choicee==3) break;
+
+                            if(choicee!=1 && choicee!=2){
+                                System.out.println("Invalid option.");
+                                continue;
+                            }
+
+                            if(choicee==1){
+                                System.out.println("Pending Complaints:");
+                                int cnt = 1;
+                                List<Complaint> pendingComplaints = new ArrayList<>();
+                                for(Complaint complaint : complaints) {
+                                    if(Objects.equals(complaint.getStatus(), "Pending")) {
+                                        System.out.println(cnt+"."+complaint.getStatus()+" "+complaint.getTitle());
+                                        System.out.println(complaint.getContent());
+                                        System.out.println("-"+complaint.getSender());
+                                        pendingComplaints.add(complaint);
+                                        cnt++;
+                                    }
+                                }
+                                System.out.println("Enter Number Of The Complaint You Want To Resolve:");
+                                scanner = new Scanner(System.in);
+                                int x = scanner.nextInt();
+                                if(x<1 || x>=cnt){
+                                    System.out.println("Invalid option.");
+                                    continue;
+                                }
+                                scanner.nextLine();
+
+                                Complaint selectedComplaint = pendingComplaints.get(x-1);
+
+                                System.out.println("Please Enter Your Reply:");
+                                scanner = new Scanner(System.in);
+                                String repl = scanner.nextLine();
+
+                                selectedComplaint.resolve(repl);
+                                System.out.println("Complaint Resolved!");
+                            }else{
+                                printDashes();
+                                System.out.println("Filter By:\n1.Resolved Status\n2.Pending Status\n3.Go Back");
+                                scanner = new Scanner(System.in);
+                                int x = scanner.nextInt();
+
+                                if(x==3) continue;
+
+                                if(x!=1 && x!=2){
+                                    System.out.println("Invalid option.");
+                                    continue;
+                                }
+                                printDashes();
+                                if(x==1){
+                                    System.out.println("Resolved Complaints:");
+                                    int cnt = 1;
+                                    List<Complaint> pendingComplaints = new ArrayList<>();
+                                    for(Complaint complaint : complaints) {
+                                        if(Objects.equals(complaint.getStatus(), "Resolved")) {
+                                            System.out.println(cnt+"."+complaint.getStatus()+" "+complaint.getTitle());
+                                            System.out.println(complaint.getContent());
+                                            System.out.println("-"+complaint.getSender());
+                                            pendingComplaints.add(complaint);
+                                            cnt++;
+                                        }
+                                    }
+                                }else{
+                                    System.out.println("Pending Complaints");
+                                    int cnt = 1;
+                                    List<Complaint> pendingComplaints = new ArrayList<>();
+                                    for(Complaint complaint : complaints) {
+                                        if(Objects.equals(complaint.getStatus(), "Pending")) {
+                                            System.out.println(cnt+"."+complaint.getStatus()+" "+complaint.getTitle());
+                                            System.out.println(complaint.getContent());
+                                            System.out.println("-"+complaint.getSender());
+                                            pendingComplaints.add(complaint);
+                                            cnt++;
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

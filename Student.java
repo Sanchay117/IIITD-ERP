@@ -3,7 +3,7 @@ import java.util.*;
 public class Student extends User {
     private Course[] enrolledCourses = {};
     private finishedCourse[] finishedCourses = {};
-    private final int semester;
+    private int semester;
     private int creditsEnrolled;
     private Complaint[] complaints = {};
 
@@ -86,6 +86,29 @@ public class Student extends User {
         System.arraycopy(finishedCourses, 0, newFinishedCourses, 0, finishedCourses.length);
         newFinishedCourses[finishedCourses.length] = course_finish;
         finishedCourses = newFinishedCourses;
+    }
+
+    @Override
+    public void removeCourse(Course course){
+        int ind = -1;
+        for (int i = 0; i < enrolledCourses.length; i++) {
+            if (enrolledCourses[i].getCourseCode().equals(course.getCourseCode())){
+                ind = i;
+                break;
+            }
+        }
+        if(ind!=-1){
+            Course[] newArr = new Course[enrolledCourses.length - 1];
+            for(int i = 0;i<ind;i++){
+                newArr[i] = enrolledCourses[i];
+            }
+            for(int j = ind+1;j<enrolledCourses.length;j++){
+                newArr[j-1] = enrolledCourses[j];
+            }
+
+            enrolledCourses = newArr;
+        }
+
     }
 
     @Override
@@ -187,6 +210,11 @@ public class Student extends User {
             cnt++;
         }
         return (float) cg /cnt;
+    }
+
+    @Override
+    public void setSemester(int sem){
+        this.semester = sem;
     }
 
     // These Are Dummy User Methods Which Only Professor.java uses!
