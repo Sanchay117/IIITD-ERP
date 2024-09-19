@@ -105,6 +105,8 @@ public class Main {
 
         Complaint cmp1 = new Complaint(false,"Abhinav","Time clash","Kindly fix ASAP!");
         Complaint cmp2 = new Complaint(false,"Sanchay","Regarding New Course Registeration System","It's really cool!");
+        s1.addComplaint(cmp2);
+        s2.addComplaint(cmp1);
         addComplaint(cmp1);
         addComplaint(cmp2);
 
@@ -417,7 +419,18 @@ public class Main {
                         System.out.println("Successfully Registered Complaint");
                         printDashes();
                     }
-                    else if(student_action == 7){
+                    else if(student_action==7){
+                        Complaint[] cmplnts = user.getComplaints();
+                        for(Complaint c: cmplnts){
+                            printDashes();
+                            System.out.println("Status:"+c.getStatus());
+                            System.out.println("Title:"+c.getTitle());
+                            System.out.println("Desc:"+c.getContent());
+                            if(Objects.equals(c.getStatus(), "Resolved")) System.out.println("Answer:"+c.getSolution());
+                            printDashes();
+                        }
+                    }
+                    else if(student_action == 8){
                         printDashes();
                         System.out.println("Logged Out!");
                         printDashes();

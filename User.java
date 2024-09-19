@@ -56,6 +56,7 @@ public abstract class User implements UserInterface{
     public abstract float calcCG();
     public abstract void setSemester(int semester);
     public abstract void removeCourse(Course course);
+    public abstract Complaint[] getComplaints();
 
     // Professor Specific Actions
     public abstract ArrayList<ProfessorCourse> getTeachingCourses();

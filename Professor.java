@@ -61,5 +61,7 @@ public class Professor extends User {
     public void addComplaint(Complaint cmp) { throw new UnsupportedOperationException(); }
     @Override
     public float calcCG() { throw new UnsupportedOperationException(); }
+    @Override
+    public Complaint[] getComplaints() { throw new UnsupportedOperationException(); }
 
 }

@@ -38,11 +38,11 @@ public class Student extends User {
         while (true){
             printDashes();
             welcome();
-            System.out.println("Press\n1.To View Available Courses\n2.To Register For Courses\n3.To View Schedule\n4.Track Academic Progress\n5.Drop Courses\n6.To Submit Complaints\n7.Logout");
+            System.out.println("Press\n1.To View Available Courses\n2.To Register For Courses\n3.To View Schedule\n4.Track Academic Progress\n5.Drop Courses\n6.To Submit Complaints\n7.View Submitted Complaints\n8.Logout");
             Scanner scanner = new Scanner(System.in);
             choice = scanner.nextInt();
             printDashes();
-            if(choice!=1 && choice!=2 && choice!=3 && choice!=4 && choice!=5 && choice!=6 && choice!=7){
+            if(choice!=1 && choice!=2 && choice!=3 && choice!=4 && choice!=5 && choice!=6 && choice!=7 && choice!=8){
                 System.out.println("Invalid choice");
                 continue;
             }
@@ -199,6 +199,10 @@ public class Student extends User {
         System.arraycopy(complaints, 0, newComplaints, 0, complaints.length);
         newComplaints[complaints.length] = cmp;
         complaints = newComplaints;
+    }
+
+    public Complaint[] getComplaints(){
+        return complaints;
     }
 
     @Override

@@ -48,6 +48,8 @@ public class Admin extends User {
     public void addComplaint(Complaint cmp) { throw new UnsupportedOperationException(); }
     @Override
     public float calcCG() { throw new UnsupportedOperationException(); }
+    @Override
+    public Complaint[] getComplaints() { throw new UnsupportedOperationException(); }
 
     // These Are Dummy User Methods Which Only Professor.java uses!
     @Override
