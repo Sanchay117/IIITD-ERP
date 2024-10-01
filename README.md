@@ -61,6 +61,7 @@ This assignment is a terminal-based IIITD Course Registration System developed a
 - The system does not handle elective/mandatory course categorization.
 - No deadlines for dropping a course.
 - User inputs data of the correct type for example if an integer is asked as input the user is not entering a string for example.
+- After assigning grades to all the courses of a student, only admin can change the student's semester.
 
 ## Credits
 Developed by Sanchay Singh [2023478].
